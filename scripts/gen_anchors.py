@@ -68,7 +68,13 @@ def write_anchors_to_file(centroids,X,anchor_file):
     print()
 
 def kmeans(X,centroids,eps,anchor_file):
-    
+    """
+    Args:
+        X: like [(w1,h1), (w2, h2), ...]
+        centroids: the index of (w,h) selected from X  as cluster w,h start
+        eps: 0.005
+        anchor_file: write the cluster result to this file 
+    """
     N = X.shape[0]
     iterations = 0
     k,dim = centroids.shape
