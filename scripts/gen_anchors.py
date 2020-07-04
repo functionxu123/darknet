@@ -71,7 +71,7 @@ def kmeans(X,centroids,eps,anchor_file):
     """
     Args:
         X: like [(w1,h1), (w2, h2), ...]
-        centroids: the index of (w,h) selected from X  as cluster w,h start
+        centroids:  (w,h) selected from X  as cluster w,h start, like [(w1,h1), (w2, h2), ...]
         eps: 0.005
         anchor_file: write the cluster result to this file 
     """
