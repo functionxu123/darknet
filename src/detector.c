@@ -22,14 +22,17 @@ typedef __compar_fn_t comparison_fn_t;
 int check_mistakes = 0;
 
 static int coco_ids[] = { 1,2,3,4,5,6,7,8,9,10,11,13,14,15,16,17,18,19,20,21,22,23,24,25,27,28,31,32,33,34,35,36,37,38,39,40,41,42,43,44,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,67,70,72,73,74,75,76,77,78,79,80,81,82,84,85,86,87,88,89,90 };
-
+//指定train命令（参数为train）
 void train_detector(char *datacfg, char *cfgfile, char *weightfile, int *gpus, int ngpus, int clear, int dont_show, int calc_map, int mjpeg_port, int show_imgs, int benchmark_layers, char* chart_path)
 {
+    //返回的list*里面记录了node链表，链表中每个node中的val字段指向一个kvp结构，其中包含key，val，used字段,保存了读进来的cfg
     list *options = read_data_cfg(datacfg);
+    //下面cfg参考cfg/coco.data文件看更好
     char *train_images = option_find_str(options, "train", "data/train.txt");
     char *valid_images = option_find_str(options, "valid", train_images);
     char *backup_directory = option_find_str(options, "backup", "/backup/");
 
+    //network 包含整个网络的参数定义struct，包括lr，epoch，layers 。。。
     network net_map;
     if (calc_map) {
         FILE* valid_file = fopen(valid_images, "r");
@@ -1874,6 +1877,8 @@ void draw_object(char *datacfg, char *cfgfile, char *weightfile, char *filename,
 
 void run_detector(int argc, char **argv)
 {
+    //解析一波命令行参数
+    //这里自己实现了命令行解析，相比于caffe中那么多依赖库，这里编译时候应该容易很多
     int dont_show = find_arg(argc, argv, "-dont_show");
     int benchmark = find_arg(argc, argv, "-benchmark");
     int benchmark_layers = find_arg(argc, argv, "-benchmark_layers");
@@ -1885,7 +1890,7 @@ void run_detector(int argc, char **argv)
     int map_points = find_int_arg(argc, argv, "-points", 0);
     check_mistakes = find_arg(argc, argv, "-check_mistakes");
     int show_imgs = find_arg(argc, argv, "-show_imgs");
-    int mjpeg_port = find_int_arg(argc, argv, "-mjpeg_port", -1);
+    int mjpeg_port = find_int_arg(argc, argv, "-mjpeg_port", -1);//类似tensorboard的port
     int avgframes = find_int_arg(argc, argv, "-avgframes", 3);
     int dontdraw_bbox = find_arg(argc, argv, "-dontdraw_bbox");
     int json_port = find_int_arg(argc, argv, "-json_port", -1);
@@ -1942,8 +1947,9 @@ void run_detector(int argc, char **argv)
     char *weights = (argc > 5) ? argv[5] : 0;
     if (weights)
         if (strlen(weights) > 0)
-            if (weights[strlen(weights) - 1] == 0x0d) weights[strlen(weights) - 1] = 0;
+            if (weights[strlen(weights) - 1] == 0x0d) weights[strlen(weights) - 1] = 0;//如果是\n,去掉
     char *filename = (argc > 6) ? argv[6] : 0;
+    //根据任务分发函数
     if (0 == strcmp(argv[2], "test")) test_detector(datacfg, cfg, weights, filename, thresh, hier_thresh, dont_show, ext_output, save_labels, outfile, letter_box, benchmark_layers);
     else if (0 == strcmp(argv[2], "train")) train_detector(datacfg, cfg, weights, gpus, ngpus, clear, dont_show, calc_map, mjpeg_port, show_imgs, benchmark_layers, chart_path);
     else if (0 == strcmp(argv[2], "valid")) validate_detector(datacfg, cfg, weights, outfile);

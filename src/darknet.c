@@ -453,7 +453,9 @@ int main(int argc, char **argv)
         fprintf(stderr, "usage: %s <function>\n", argv[0]);
         return 0;
     }
+    //找到-i选项，指定gpu
     gpu_index = find_int_arg(argc, argv, "-i", 0);
+    //或者不用gpu就-nogpu
     if(find_arg(argc, argv, "-nogpu")) {
         gpu_index = -1;
         printf("\n Currently Darknet doesn't support -nogpu flag. If you want to use CPU - please compile Darknet with GPU=0 in the Makefile, or compile darknet_no_gpu.sln on Windows.\n");
@@ -480,7 +482,7 @@ int main(int argc, char **argv)
 #endif  // GPU
 
     show_opencv_info();
-
+    //分发argv[1]指定的功能,这里不如caffe优雅，caffe中的工厂模式好些
     if (0 == strcmp(argv[1], "average")){
         average(argc, argv);
     } else if (0 == strcmp(argv[1], "yolo")){
@@ -489,7 +491,7 @@ int main(int argc, char **argv)
         run_voxel(argc, argv);
     } else if (0 == strcmp(argv[1], "super")){
         run_super(argc, argv);
-    } else if (0 == strcmp(argv[1], "detector")){
+    } else if (0 == strcmp(argv[1], "detector")){//检测用的是这个
         run_detector(argc, argv);
     } else if (0 == strcmp(argv[1], "detect")){
         float thresh = find_float_arg(argc, argv, "-thresh", .24);

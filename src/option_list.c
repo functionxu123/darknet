@@ -53,6 +53,13 @@ metadata get_metadata(char *file)
     }
     return m;
 }
+/*
+typedef struct list{
+    int size;
+    node *front;
+    node *back;
+} list;
+*/
 
 int read_option(char *s, list *options)
 {
@@ -71,6 +78,13 @@ int read_option(char *s, list *options)
     option_insert(options, key, val);
     return 1;
 }
+/*
+typedef struct{
+    char *key;
+    char *val;
+    int used;
+} kvp;
+*/
 
 void option_insert(list *l, char *key, char *val)
 {
