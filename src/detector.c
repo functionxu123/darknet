@@ -42,7 +42,7 @@ void train_detector(char *datacfg, char *cfgfile, char *weightfile, int *gpus, i
             exit(-1);
         }
         else fclose(valid_file);
-
+        //val 算map时候只用了第一个gpu
         cuda_set_device(gpus[0]);
         printf(" Prepare additional network for mAP calculation...\n");
         net_map = parse_network_cfg_custom(cfgfile, 1, 1);
