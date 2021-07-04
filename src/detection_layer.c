@@ -79,6 +79,7 @@ void forward_detection_layer(const detection_layer l, network_state state)
                 int truth_index = (b*locations + i)*(1+l.coords+l.classes);
                 int is_obj = state.truth[truth_index];
                 for (j = 0; j < l.n; ++j) {
+                    //这里先都认为该grid中为无目标，都算上noobj的损失
                     int p_index = index + locations*l.classes + i*l.n + j;
                     l.delta[p_index] = l.noobject_scale*(0 - l.output[p_index]);
                     *(l.cost) += l.noobject_scale*pow(l.output[p_index], 2);
@@ -160,6 +161,7 @@ void forward_detection_layer(const detection_layer l, network_state state)
                 *(l.cost) -= l.noobject_scale * pow(l.output[p_index], 2);
                 *(l.cost) += l.object_scale * pow(1-l.output[p_index], 2);
                 avg_obj += l.output[p_index];
+                //只有有对应GT的预测框才算标签为1或者iou的置信度损失，这里覆盖了上面noobj的损失
                 l.delta[p_index] = l.object_scale * (1.-l.output[p_index]);
 
                 if(l.rescore){
